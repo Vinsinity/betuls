@@ -4,13 +4,13 @@ networks:
   laravel:
 
 services:
-  site:
+  betuls:
     build:
       context: ./dockerfiles
       dockerfile: nginx.root.dockerfile
     container_name: nginx
     ports:
-      - 80:80
+      - 8080:80
     volumes:
       - ./src:/var/www/html:delegated
     depends_on:
@@ -29,12 +29,14 @@ services:
     ports:
       - 3306:3306
     environment:
-      MYSQL_DATABASE: homestead
-      MYSQL_USER: homestead
-      MYSQL_PASSWORD: secret
-      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: betuls
+      MYSQL_USER: betuls
+      MYSQL_PASSWORD: betulssecret
+      MYSQL_ROOT_PASSWORD: betulssecret
       SERVICE_TAGS: dev
       SERVICE_NAME: mysql
+    volumes:
+      - ./mysql:/var/lib/mysql
     networks:
       - laravel
 
@@ -52,6 +54,8 @@ services:
     image: redis:alpine
     container_name: redis
     restart: unless-stopped
+    volumes:
+      - ./redis:/data
     ports:
       - 6379:6379
     networks:
