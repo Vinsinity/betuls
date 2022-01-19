@@ -1,7 +1,7 @@
 version: '3'
 
 networks:
-  laravel:
+  betuls:
 
 services:
   betuls:
@@ -13,7 +13,7 @@ services:
         - GID=${GID:-1000}
     container_name: nginx
     ports:
-      - 80:80
+      - 8080:80
     volumes:
       - ./src:/var/www/html:delegated
     depends_on:
@@ -22,7 +22,7 @@ services:
       - mysql
       - mailhog
     networks:
-      - laravel
+      - betuls
 
   mysql:
     image: mariadb:10.6
@@ -41,7 +41,7 @@ services:
     volumes:
       - ./mysql:/var/lib/mysql
     networks:
-      - laravel
+      - betuls
 
   php:
     build:
@@ -54,7 +54,7 @@ services:
     volumes:
       - ./src:/var/www/html:delegated
     networks:
-      - laravel
+      - betuls
 
   redis:
     image: redis:alpine
@@ -65,7 +65,7 @@ services:
     ports:
       - 6379:6379
     networks:
-      - laravel
+      - betuls
 
   composer:
     build:
@@ -83,7 +83,7 @@ services:
     user: laravel
     entrypoint: ['composer', '--ignore-platform-reqs']
     networks:
-      - laravel
+      - betuls
 
   npm:
     image: node:13.7
@@ -96,7 +96,7 @@ services:
     working_dir: /var/www/html
     entrypoint: ['npm']
     networks:
-      - laravel
+      - betuls
 
   artisan:
     build:
@@ -113,7 +113,7 @@ services:
     working_dir: /var/www/html
     entrypoint: ['php', '/var/www/html/artisan']
     networks:
-      - laravel
+      - betuls
 
   mailhog:
     image: mailhog/mailhog:latest
@@ -122,4 +122,4 @@ services:
       - 1025:1025
       - 8025:8025
     networks:
-      - laravel
+      - betuls
