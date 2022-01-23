@@ -15,7 +15,7 @@ services:
     ports:
       - 8080:80
     volumes:
-      - ./src:/var/www/html:delegated
+      - /src:/var/www/html:delegated
     depends_on:
       - php
       - redis
@@ -39,7 +39,7 @@ services:
       SERVICE_TAGS: dev
       SERVICE_NAME: mysql
     volumes:
-      - ./mysql:/var/lib/mysql
+      - /mysql:/var/lib/mysql
     networks:
       - betuls
 
@@ -52,7 +52,7 @@ services:
         - GID=${GID:-1000}
     container_name: php
     volumes:
-      - ./src:/var/www/html:delegated
+      - /src:/var/www/html:delegated
     networks:
       - betuls
 
@@ -61,7 +61,7 @@ services:
     container_name: redis
     restart: unless-stopped
     volumes:
-      - ./redis:/data
+      - /redis:/data
     ports:
       - 6379:6379
     networks:
@@ -76,7 +76,7 @@ services:
         - GID=${GID:-1000}
     container_name: composer
     volumes:
-      - ./src:/var/www/html
+      - /src:/var/www/html
     working_dir: /var/www/html
     depends_on:
       - php
@@ -89,7 +89,7 @@ services:
     image: node:13.7
     container_name: npm
     volumes:
-      - ./src:/var/www/html
+      - /src:/var/www/html
     ports:
       - 3000:3000
       - 3001:3001
@@ -107,7 +107,7 @@ services:
         - GID=${GID:-1000}
     container_name: artisan
     volumes:
-      - ./src:/var/www/html:delegated
+      - /src:/var/www/html:delegated
     depends_on:
       - mysql
     working_dir: /var/www/html
