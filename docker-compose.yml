@@ -4,29 +4,29 @@ networks:
   betuls:
 
 services:
-  betuls:
+  betulstest:
     build:
       context: ./dockerfiles
       dockerfile: nginx.dockerfile
       args:
         - UID=${UID:-1000}
         - GID=${GID:-1000}
-    container_name: nginx
+    container_name: nginxtest
     ports:
       - 8080:80
     volumes:
       - ./src:/var/www/html:delegated
     depends_on:
-      - php
-      - redis
-      - mysql
-      - mailhog
+      - phptest
+      - redistest
+      - mysqltest
+      - mailhogtest
     networks:
-      - betuls
+      - betulstest
 
-  mysql:
+  mysqltest:
     image: mariadb:10.6
-    container_name: mysql
+    container_name: mysqltest
     restart: unless-stopped
     tty: true
     ports:
@@ -40,52 +40,52 @@ services:
       SERVICE_NAME: mysql
     volumes:
       - ./mysql:/var/lib/mysql
-    networks:
+    networks:test
       - betuls
 
-  php:
+  phptest:
     build:
       context: ./dockerfiles
       dockerfile: php.dockerfile
       args:
         - UID=${UID:-1000}
         - GID=${GID:-1000}
-    container_name: php
+    container_name: phptest
     volumes:
       - ./src:/var/www/html:delegated
     networks:
-      - betuls
+      - betulstest
 
-  redis:
+  redistest:
     image: redis:alpine
-    container_name: redis
+    container_name: redistest
     restart: unless-stopped
     volumes:
-      - /redis:/data
+      - ./redis:/data
     ports:
       - 6379:6379
     networks:
-      - betuls
+      - betulstest
 
-  composer:
+  composertest:
     build:
       context: ./dockerfiles
       dockerfile: composer.dockerfile
       args:
         - UID=${UID:-1000}
         - GID=${GID:-1000}
-    container_name: composer
+    container_name: composertest
     volumes:
       - ./src:/var/www/html
     working_dir: /var/www/html
     depends_on:
-      - php
+      - phptest
     user: laravel
     entrypoint: ['composer', '--ignore-platform-reqs']
     networks:
-      - betuls
+      - betulstest
 
-  npm:
+  npmtest:
     image: node:13.7
     container_name: npm
     volumes:
@@ -96,30 +96,30 @@ services:
     working_dir: /var/www/html
     entrypoint: ['npm']
     networks:
-      - betuls
+      - betulstest
 
-  artisan:
+  artisantest:
     build:
       context: ./dockerfiles
       dockerfile: php.dockerfile
       args:
         - UID=${UID:-1000}
         - GID=${GID:-1000}
-    container_name: artisan
+    container_name: artisantest
     volumes:
       - ./src:/var/www/html:delegated
     depends_on:
-      - mysql
+      - mysqltest
     working_dir: /var/www/html
     entrypoint: ['php', '/var/www/html/artisan']
     networks:
-      - betuls
+      - betulstest
 
-  mailhog:
+  mailhogtest:
     image: mailhog/mailhog:latest
-    container_name: mailhog
+    container_name: mailhogtest
     ports:
       - 1025:1025
       - 8025:8025
     networks:
-      - betuls
+      - betulstest
