@@ -1,7 +1,7 @@
 version: '3'
 
 networks:
-  betuls:
+  betulstest:
 
 services:
   betulstest:
@@ -13,7 +13,7 @@ services:
         - GID=${GID:-1000}
     container_name: nginxtest
     ports:
-      - 8080:80
+      - 8082:80
     volumes:
       - ./src:/var/www/html:delegated
     depends_on:
@@ -30,7 +30,7 @@ services:
     restart: unless-stopped
     tty: true
     ports:
-      - 3306:3306
+      - 3308:3306
     environment:
       MYSQL_DATABASE: betuls
       MYSQL_USER: betuls
@@ -40,8 +40,8 @@ services:
       SERVICE_NAME: mysql
     volumes:
       - ./mysql:/var/lib/mysql
-    networks:test
-      - betuls
+    networks:
+      - betulstest
 
   phptest:
     build:
@@ -63,7 +63,7 @@ services:
     volumes:
       - ./redis:/data
     ports:
-      - 6379:6379
+      - 6381:6379
     networks:
       - betulstest
 
@@ -87,12 +87,12 @@ services:
 
   npmtest:
     image: node:13.7
-    container_name: npm
+    container_name: npmtest
     volumes:
       - ./src:/var/www/html
     ports:
-      - 3000:3000
-      - 3001:3001
+      - 3012:3000
+      - 3013:3001
     working_dir: /var/www/html
     entrypoint: ['npm']
     networks:
@@ -119,7 +119,7 @@ services:
     image: mailhog/mailhog:latest
     container_name: mailhogtest
     ports:
-      - 1025:1025
-      - 8025:8025
+      - 1027:1025
+      - 8027:8025
     networks:
       - betulstest
