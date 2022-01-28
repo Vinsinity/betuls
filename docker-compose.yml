@@ -15,7 +15,7 @@ services:
     ports:
       - 8082:80
     volumes:
-      - ./src:/var/www/html:delegated
+      - ./src:/var/www/html
     depends_on:
       - phptest
       - redistest
